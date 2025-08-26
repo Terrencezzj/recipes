@@ -5,6 +5,9 @@ This repo intends to host community maintained common recipes to run vLLM answer
 
 ## Guides
 
+### Cohere <img src="https://avatars.githubusercontent.com/u/54850923?s=48&v=4" alt="Cohere" width="16" height="16" style="vertical-align:middle;">
+- [Command-R, Command-R-plus](Cohere/Command-R.md)
+
 ### DeepSeek <img src="https://avatars.githubusercontent.com/u/148330874?s=200&v=4" alt="DeepSeek" width="16" height="16" style="vertical-align:middle;">
 - [DeepSeek-V3, DeepSeek-R1](DeepSeek/DeepSeek-V3.md)
 - [DeepSeek-V3.1](DeepSeek/DeepSeek-V3_1.md)
