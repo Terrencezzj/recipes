@@ -73,7 +73,7 @@ P99 ITL (ms):                            430.96
 ==================================================
 ```
 
-## Running Command-A and Command-A-Reasoning with FP8
+## Convert Command-A and Command-A-Reasoning to FP8
 To get FP8 checkpoint,  `llmcompressor` is required. 
 You can use the following script to convert FP8 checkpoint.
 #### Example script
@@ -103,7 +103,7 @@ def quantize_to_fp8(source_dir, output_dir):
     tokenizer.save_pretrained(output_dir)
 ```
 
-## Running Command-R-08-2024 and Command-R-plus-08-2024 with FP8
+## Running Command-A and Command-A-Reasoning with FP8
 
 ```bash
 

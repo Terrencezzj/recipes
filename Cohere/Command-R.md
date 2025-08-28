@@ -104,7 +104,7 @@ P99 ITL (ms):                            252.24
 ```
 
 
-## Running Command-R-08-2024 and Command-R-plus-08-2024 with FP8
+## Convert Command-R-08-2024 and Command-R-plus-08-2024 to FP8
 To get FP8 checkpoint,  `llmcompressor` is required. 
 You can use the following script to convert FP8 checkpoint.
 #### Example script
