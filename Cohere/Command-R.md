@@ -14,12 +14,12 @@ uv pip install -U vllm --torch-backend auto
 
 ```bash
 
-# Start server with BF16 model on 2 GPUs for R.
+# Start server with BF16 model on 2 H100_80GB GPUs for R.
 vllm serve CohereLabs/c4ai-command-r-08-2024 \
      --tensor-parallel-size 2 \
      --enable-chunked-prefill
 
-# Start server with BF16 model on 4 GPUs for Rplus.
+# Start server with BF16 model on 4 H100_80GB GPUs for Rplus.
 vllm serve CohereLabs/c4ai-command-r-plus-08-2024 \
      --tensor-parallel-size 4 \
      --enable-chunked-prefill
@@ -129,8 +129,6 @@ def quantize_to_fp8(source_dir, output_dir):
         model=model,
         recipe=quant_recipe,
         tokenizer=tokenizer,
-        max_seq_length=2048,
-        num_calibration_samples=128,
     )
     model.save_pretrained(output_dir, save_compressed=True, skip_compression_stats=True)
     tokenizer.save_pretrained(output_dir)
