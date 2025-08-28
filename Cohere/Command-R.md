@@ -29,13 +29,65 @@ vllm serve CohereLabs/c4ai-command-r-plus-08-2024 \
 * You can set `--max-num-batched-tokens` to balance throughput and latency, higher means higher throughput but higher latency. `--max-num-batched-tokens=4096` is usually good for with chunked prefill enabled.
 * vLLM conservatively use 90% of GPU memory, you can set `--gpu-memory-utilization=0.95` to maximize KVCache.
 
+### Convert Command-R-08-2024 and Command-R-plus-08-2024 to FP8
+To get FP8 checkpoint,  `llmcompressor` is required. 
+You can use the following script to convert FP8 checkpoint.
+#### Example script
+
+```python
+def quantize_to_fp8(source_dir, output_dir):
+    from llmcompressor.transformers import oneshot
+    from transformers import AutoTokenizer, AutoModelForCausalLM
+    from llmcompressor.modifiers.quantization import QuantizationModifier
+
+    os.makedirs(output_dir, exist_ok = True)
+    tokenizer = AutoTokenizer.from_pretrained(source_dir)
+    model = AutoModelForCausalLM.from_pretrained(source_dir, torch_dtype="auto")
+
+    quant_recipe = QuantizationModifier(targets = "Linear",
+                                        scheme = "FP8_DYNAMIC",
+                                        ignore = ['re:.*lm_head'],
+                                        kv_cache_scheme = None)
+
+    # Apply the quantization algorithm.
+    oneshot(
+        model=model,
+        recipe=quant_recipe,
+        tokenizer=tokenizer,
+    )
+    model.save_pretrained(output_dir, save_compressed=True, skip_compression_stats=True)
+    tokenizer.save_pretrained(output_dir)
+```
+
+## Running Command-R-08-2024 and Command-R-plus-08-2024 with FP8
+
+```bash
+
+# Start server with FP8 model on 1 GPUs for R.
+vllm serve path-to-CohereLabs/c4ai-command-r-08-2024-fp8 \
+     --tensor-parallel-size 1 \
+     --enable-chunked-prefill
+     --max-num-batched-tokens 4096
+     --max-model-len 128000
+     --gpu-memory-utilization 0.95
+     --quantization=compressed-tensors
+
+
+# Start server with FP8 model on 2 GPUs for Rplus.
+vllm serve path-to-CohereLabs/c4ai-command-r-plus-08-2024-fp8 \
+     --tensor-parallel-size 2 \
+     --enable-chunked-prefill
+     --max-num-batched-tokens 4096
+     --max-model-len 128000
+     --gpu-memory-utilization 0.95
+     --quantization=compressed-tensors
+```
+
 ## Benchmarking
 
 For benchmarking, you need to disable prefix caching by adding `--no-enable-prefix-caching` to the server command.
 
 Once the server is running, open another terminal and run the benchmark client:
-
-### BF16 Benchmark
 
 ```bash
 # Prompt-heavy benchmark (10k/1k)
@@ -102,63 +154,6 @@ Median ITL (ms):                         18.19
 P99 ITL (ms):                            252.24    
 ==================================================
 ```
-
-
-## Convert Command-R-08-2024 and Command-R-plus-08-2024 to FP8
-To get FP8 checkpoint,  `llmcompressor` is required. 
-You can use the following script to convert FP8 checkpoint.
-#### Example script
-
-```python
-def quantize_to_fp8(source_dir, output_dir):
-    from llmcompressor.transformers import oneshot
-    from transformers import AutoTokenizer, AutoModelForCausalLM
-    from llmcompressor.modifiers.quantization import QuantizationModifier
-
-    os.makedirs(output_dir, exist_ok = True)
-    tokenizer = AutoTokenizer.from_pretrained(source_dir)
-    model = AutoModelForCausalLM.from_pretrained(source_dir, torch_dtype="auto")
-
-    quant_recipe = QuantizationModifier(targets = "Linear",
-                                        scheme = "FP8_DYNAMIC",
-                                        ignore = ['re:.*lm_head'],
-                                        kv_cache_scheme = None)
-
-    # Apply the quantization algorithm.
-    oneshot(
-        model=model,
-        recipe=quant_recipe,
-        tokenizer=tokenizer,
-    )
-    model.save_pretrained(output_dir, save_compressed=True, skip_compression_stats=True)
-    tokenizer.save_pretrained(output_dir)
-```
-
-## Running Command-R-08-2024 and Command-R-plus-08-2024 with FP8
-
-```bash
-
-# Start server with FP8 model on 1 GPUs for R.
-vllm serve path-to-CohereLabs/c4ai-command-r-08-2024-fp8 \
-     --tensor-parallel-size 1 \
-     --enable-chunked-prefill
-     --max-num-batched-tokens 4096
-     --max-model-len 128000
-     --gpu-memory-utilization 0.95
-     --quantization=compressed-tensors
-
-
-# Start server with FP8 model on 2 GPUs for Rplus.
-vllm serve path-to-CohereLabs/c4ai-command-r-plus-08-2024-fp8 \
-     --tensor-parallel-size 2 \
-     --enable-chunked-prefill
-     --max-num-batched-tokens 4096
-     --max-model-len 128000
-     --gpu-memory-utilization 0.95
-     --quantization=compressed-tensors
-```
-### Expected Output
-
 ##### Command-R-plus-08-2024 FP8
 
 ```shell
