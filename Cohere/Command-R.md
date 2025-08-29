@@ -35,11 +35,12 @@ You can use the following script to convert FP8 checkpoint.
 #### Example script
 
 ```python
-def quantize_to_fp8(source_dir, output_dir):
-    from llmcompressor.transformers import oneshot
-    from transformers import AutoTokenizer, AutoModelForCausalLM
-    from llmcompressor.modifiers.quantization import QuantizationModifier
+import os
+from llmcompressor.transformers import oneshot
+from transformers import AutoTokenizer, AutoModelForCausalLM
+from llmcompressor.modifiers.quantization import QuantizationModifier
 
+def quantize_to_fp8(source_dir, output_dir):
     os.makedirs(output_dir, exist_ok = True)
     tokenizer = AutoTokenizer.from_pretrained(source_dir)
     model = AutoModelForCausalLM.from_pretrained(source_dir, torch_dtype="auto")
