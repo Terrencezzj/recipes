@@ -6,7 +6,9 @@ This repo intends to host community maintained common recipes to run vLLM answer
 ## Guides
 
 ### Cohere <img src="https://avatars.githubusercontent.com/u/54850923?s=48&v=4" alt="Cohere" width="16" height="16" style="vertical-align:middle;">
-- [Command-A, Command-A-Reasoning, Command-A-Vision](Cohere/Command-A.md)
+- [Command-A](Cohere/Command-A.md)
+- [Command-A-Reasoning](Cohere/Command-A-Reasoning.md)
+- [Command-A-Vision](Cohere/Command-A-Vision.md)
 - [Command-R, Command-R-plus](Cohere/Command-R.md)
 
 ### DeepSeek <img src="https://avatars.githubusercontent.com/u/148330874?s=200&v=4" alt="DeepSeek" width="16" height="16" style="vertical-align:middle;">
