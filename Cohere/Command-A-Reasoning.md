@@ -40,7 +40,7 @@ curl http://localhost:8000/v1/chat/completions \
             }
         ],
         "chat_template_kwargs": {
-            "thinking": true
+            "reasoning": true
         }
     }'
 ```
@@ -103,6 +103,43 @@ Subtracting 9.11 from 9.8:
      Comparing 911 and 980, 980 is greater.
      
      Thus, the final answer is \\(\\boxed{9.8}\\).
+```
+
+### curl Example Without Reasoning
+```bash
+curl http://localhost:8000/v1/chat/completions \
+    -H "Content-Type: application/json" \
+    -d '{
+        "model": "CohereLabs/command-a-reasoning-08-2025",
+        "messages": [
+            {
+                "role": "user",
+                "content": "9.11 and 9.8, which is greater?"
+            }
+        ],
+        "chat_template_kwargs": {
+            "reasoning": false
+        }
+    }'
+```
+#### Example Output Without Reasoning
+```markdown
+To determine which is greater between 9.11 and 9.8, we compare the numbers place by place:
+
+1. **Units place**: Both numbers have 9 in the units place, so they are equal here.
+2. **Decimal part**: Compare the tenths place. 
+   - 9.11 has 1 in the tenths place.
+   - 9.8 has 8 in the tenths place.
+   
+   Since 8 is greater than 1, the number with 8 in the tenths place (9.8) is larger. 
+   
+   To verify, consider:
+   - 9.8 is equivalent to 9.80.
+   - Comparing 9.11 and 9.80, the tenths place (8 vs. 1) and hundredths place (0 vs. 1) confirm that 9.80 is greater than 9.11.
+   
+   Thus, 9.8 is greater than 9.11.
+   
+   \\boxed{9.8}
 ```
 
 ## Convert Command-A-Reasoning to FP8
