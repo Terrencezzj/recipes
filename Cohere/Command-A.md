@@ -39,7 +39,7 @@ from llmcompressor.modifiers.quantization import QuantizationModifier
 def quantize_to_fp8(source_dir, output_dir):
     os.makedirs(output_dir, exist_ok = True)
     tokenizer = AutoTokenizer.from_pretrained(source_dir)
-    model = AutoModelForCausalLM.from_pretrained(source_dir, torch_dtype="auto")
+    model = AutoModelForCausalLM.from_pretrained(source_dir, dtype="auto")
 
     quant_recipe = QuantizationModifier(targets = "Linear",
                                         scheme = "FP8_DYNAMIC",
