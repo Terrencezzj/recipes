@@ -55,6 +55,7 @@ def quantize_to_fp8(source_dir, output_dir):
         model=model,
         recipe=quant_recipe,
         tokenizer=tokenizer,
+        tie_word_embeddings=True,
     )
     model.save_pretrained(output_dir, save_compressed=True, skip_compression_stats=True)
     tokenizer.save_pretrained(output_dir)
