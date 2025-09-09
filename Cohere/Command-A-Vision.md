@@ -45,17 +45,20 @@ You can use the following script to convert FP8 checkpoint.
 ```python
 import os
 from llmcompressor.transformers import oneshot
-from transformers import AutoTokenizer, AutoModelForCausalLM
+from transformers import AutoTokenizer, AutoModelForImageTextToText
 from llmcompressor.modifiers.quantization import QuantizationModifier
 
 def quantize_to_fp8(source_dir, output_dir):
     os.makedirs(output_dir, exist_ok = True)
     tokenizer = AutoTokenizer.from_pretrained(source_dir)
-    model = AutoModelForCausalLM.from_pretrained(source_dir, dtype="auto")
+    model = AutoModelForImageTextToText.from_pretrained(source_dir, dtype="auto")
 
     quant_recipe = QuantizationModifier(targets = "Linear",
                                         scheme = "FP8_DYNAMIC",
-                                        ignore = ['re:.*lm_head', 're:multi_modal_projector.*', 're:vision_tower.*'],
+                                        ignore = [
+                                             're:.*lm_head', 
+                                             're:model.multi_modal_projector.*', 
+                                             're:re:model.vision_tower.*'],
                                         kv_cache_scheme = None)
 
     # Apply the quantization algorithm.
@@ -67,6 +70,12 @@ def quantize_to_fp8(source_dir, output_dir):
     )
     model.save_pretrained(output_dir, save_compressed=True, skip_compression_stats=True)
     tokenizer.save_pretrained(output_dir)
+
+    # Save preprocessor config
+    preprocessor_config_path = os.path.join(source_dir, "preprocessor_config.json")
+    if os.path.exists(preprocessor_config_path):
+        import shutil
+        shutil.copy2(preprocessor_config_path, os.path.join(output_dir, "preprocessor_config.json"))
 ```
 
 ## Running Command-A-Vision with FP8
